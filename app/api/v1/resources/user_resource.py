@@ -17,7 +17,11 @@ class UserListResource(Resource):
     def post(self):
         try:
             user_data = user_schema.load(request.get_json())
-            user = UserService.create_user(user_data)
+            user, error = UserService.create_user(user_data)
+            
+            if error:
+                return {'message': error}, HttpStatus.BAD_REQUEST
+                
             return user_schema.dump(user), HttpStatus.CREATED
         except ValidationError as err:
             return {'message': 'Validation error', 'errors': err.messages}, HttpStatus.BAD_REQUEST
@@ -36,7 +40,7 @@ class UserResource(Resource):
             user = UserService.update_user(user_id, user_data)
             
             if not user:
-                return {'message': 'User not found'}, HttpStatus.NOT_FOUND
+                return {'message': 'User not found or data validation failed'}, HttpStatus.NOT_FOUND
                 
             return user_schema.dump(user), HttpStatus.OK
         except ValidationError as err:
