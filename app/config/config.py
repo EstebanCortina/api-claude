@@ -6,3 +6,4 @@ load_dotenv(os.path.join(os.path.dirname(basedir), '..', '.env'))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard-to-guess-key'
+    CORS_HEADERS = 'Content-Type'
